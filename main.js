@@ -2,6 +2,8 @@
 const roleHarvester = require('role.harvester');
 const roleUpgrader = require('role.upgrader');
 const roleBuilder = require('role.builder');
+// structures
+const structureTower = require('structure.tower');
 // utils
 const handleCreepCount = require('utils.handleCreepCount');
 
@@ -16,6 +18,14 @@ module.exports.loop = function () {
 
   /* ensure creep amounts */
   handleCreepCount();
+
+  /* run structures */
+  for (const structureName in Game.structures) {
+    const structure = Game.structures[structureName];
+    if (structure.structureType == 'tower') {
+      structureTower.run(structure);
+    }
+  }
 
   /* run creeps */
   for (const name in Game.creeps) {

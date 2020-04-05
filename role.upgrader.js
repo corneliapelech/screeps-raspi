@@ -12,12 +12,12 @@ const roleUpgrader = {
 
     if(creep.memory.upgrading) {
       if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}});
+        creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#30b4d1'}});
       }
     } else {
       const target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
       if(creep.harvest(target) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
+        creep.moveTo(target, {visualizePathStyle: {stroke: '#30b4d1'}});
       }
     }
   }

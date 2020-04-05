@@ -3,14 +3,6 @@ const handleCreepCount = function () {
 
     const room = Game.rooms[roomName];
     // const roomControllerLevel = room.controller.level;
-    let bodyParts = [];
-    if (room.energyCapacityAvailable >= 550) {
-      bodyParts = [WORK, WORK, CARRY, MOVE, MOVE];    // costs: 350
-    } else if (room.energyAvailable >= 400) {
-      bodyParts = [WORK, CARRY, MOVE, MOVE];  // costs: 250
-    } else {
-      bodyParts = [WORK, CARRY, MOVE];    // costs: 200
-    }
 
     // creeps
     const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == roomName);
@@ -19,19 +11,38 @@ const handleCreepCount = function () {
     // locations
     const constructionSites = _.filter(Game.constructionSites, (conSite) => conSite.room.name == roomName);
 
-    if (harvesters.length < 4) {
-      Game.spawns['Spawn1'].spawnCreep(bodyParts, 'Harvester' + Game.time, {memory: {role: 'harvester'}});
+    // ensure creeps
+    // harvesters
+    if (harvesters.length < 5) {
+      Game.spawns['Spawn1'].spawnCreep(
+        getBodyParts(room.energyCapacityAvailable),
+        'Harvester' + Game.time,
+        {memory: {role: 'harvester'}}
+      );
     } else {
+      // handle upgraders and builders depending on existence of construction sites
       if (constructionSites.length > 0) {
-        if (upgraders.length < 4) {
-          Game.spawns['Spawn1'].spawnCreep(bodyParts, 'Upgrader' + Game.time, {memory: {role: 'upgrader'}});
+        if (upgraders.length < 2) {
+          Game.spawns['Spawn1'].spawnCreep(
+            getBodyParts(room.energyCapacityAvailable),
+            'Upgrader' + Game.time,
+            {memory: {role: 'upgrader'}}
+          );
         }
         if (builders.length < 4) {
-          Game.spawns['Spawn1'].spawnCreep(bodyParts, 'Builder' + Game.time, {memory: {role: 'builder'}});
+          Game.spawns['Spawn1'].spawnCreep(
+            getBodyParts(room.energyCapacityAvailable),
+            'Builder' + Game.time,
+            {memory: {role: 'builder'}}
+          );
         }
       } else {
-        if (upgraders.length < 6) {
-          Game.spawns['Spawn1'].spawnCreep(bodyParts, 'Upgrader' + Game.time, {memory: {role: 'upgrader'}});
+        if (upgraders.length < 4) {
+          Game.spawns['Spawn1'].spawnCreep(
+            getBodyParts(room.energyCapacityAvailable),
+            'Upgrader' + Game.time,
+            {memory: {role: 'upgrader'}}
+          );
         }
         if (builders.length > 0) {
           for (builder of builders) {
@@ -42,4 +53,17 @@ const handleCreepCount = function () {
     }
   }
 }
+
+function getBodyParts(maxEnergy) {
+  if (maxEnergy >= 700) {
+    return [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];  // costs: 600
+  } else if (maxEnergy >= 550) {
+    return [WORK, WORK, CARRY, MOVE, MOVE];    // costs: 350
+  } else if (maxEnergy >= 400) {
+    return [WORK, CARRY, MOVE, MOVE];  // costs: 250
+  } else {
+    return [WORK, CARRY, MOVE];    // costs: 200
+  }
+}
+
 module.exports = handleCreepCount;
