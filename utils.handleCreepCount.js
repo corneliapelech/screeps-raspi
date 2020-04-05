@@ -27,7 +27,7 @@ const handleCreepCount = function () {
         'Upgrader' + Game.time,
         {memory: {role: 'upgrader'}}
       );
-    } else if (maintainers.length < 1) {
+    } else if (maintainers.length < 2) {
       Game.spawns['Spawn1'].spawnCreep(
         getBodyParts(room.energyCapacityAvailable),
         'Maintainer' + Game.time,
@@ -48,8 +48,8 @@ const handleCreepCount = function () {
 
 function getBodyParts(maxEnergy) {
   if (maxEnergy >= 700) {
-    // costs: 600
-    return [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
+    // costs: 650
+    return [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE];
   } else if (maxEnergy >= 550) {
     // costs: 350
     return [WORK, WORK, CARRY, MOVE, MOVE];
