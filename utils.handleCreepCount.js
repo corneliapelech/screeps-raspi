@@ -8,6 +8,7 @@ const handleCreepCount = function () {
     const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == roomName);
     const upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room.name == roomName);
     const builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder' && creep.room.name == roomName);
+    const maintainers = _.filter(Game.creeps, (creep) => creep.memory.role == 'maintainer' && creep.room.name == roomName);
     // locations
     const constructionSites = _.filter(Game.constructionSites, (conSite) => conSite.room.name == roomName);
 
@@ -26,16 +27,20 @@ const handleCreepCount = function () {
         'Upgrader' + Game.time,
         {memory: {role: 'upgrader'}}
       );
-    // builders depending on existence of construction sites
-    } else {
-      if (constructionSites.length > 0) {
-        if (builders.length < 4) {
-          Game.spawns['Spawn1'].spawnCreep(
-            getBodyParts(room.energyCapacityAvailable),
-            'Builder' + Game.time,
-            {memory: {role: 'builder'}}
-          );
-        }
+    } else if (maintainers.length < 1) {
+      Game.spawns['Spawn1'].spawnCreep(
+        getBodyParts(room.energyCapacityAvailable),
+        'Maintainer' + Game.time,
+        {memory: {role: 'maintainer'}}
+      );
+      // builders depending on existence of construction sites
+    } else if (constructionSites.length > 0) {
+      if (builders.length < 4) {
+        Game.spawns['Spawn1'].spawnCreep(
+          getBodyParts(room.energyCapacityAvailable),
+          'Builder' + Game.time,
+          {memory: {role: 'builder'}}
+        );
       }
     }
   }

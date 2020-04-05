@@ -73,6 +73,31 @@ const utilsRun = {
   },
 
   /**
+   * find closest damaged tower
+   * if none found: return false
+   * if one found: repair tower or move closer, return true
+   * @param {Creep} creep
+   * @param {Object} moveOptions
+   * @returns {Boolean} was a damaged tower found
+   */
+  repairClosestDamagedTower: (creep, moveOptions) => {
+    const closestDamagedTower = creep.pos.findClosestByRange(
+      FIND_STRUCTURES,
+      {filter: (structure) =>
+        structure.structureType == 'tower' &&
+        structure.hits < structure.hitsMax
+      }
+    );
+    if (closestDamagedTower) {
+      if (creep.repair(closestDamagedTower) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(closestDamagedTower, moveOptions);
+      }
+      return true;
+    }
+    return false;
+  },
+
+  /**
    * find closest spawn or extension that's not fully energized
    * none found - return false
    * spawn found - transfer energy or move closer, return true

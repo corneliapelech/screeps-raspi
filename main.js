@@ -2,6 +2,7 @@
 const roleHarvester = require('role.harvester');
 const roleUpgrader = require('role.upgrader');
 const roleBuilder = require('role.builder');
+const roleMaintainer = require('role.maintainer');
 // structures
 const structureTower = require('structure.tower');
 // utils
@@ -39,6 +40,10 @@ module.exports.loop = function () {
         break;
       case 'builder':
         roleBuilder.run(creep);
+        break;
+      case 'maintainer':
+        roleMaintainer.run(creep);
+        break;
     }
   }
 
