@@ -19,35 +19,22 @@ const handleCreepCount = function () {
         'Harvester' + Game.time,
         {memory: {role: 'harvester'}}
       );
+    // upgraders
+    } else if (upgraders.length < 2) {
+      Game.spawns['Spawn1'].spawnCreep(
+        getBodyParts(room.energyCapacityAvailable),
+        'Upgrader' + Game.time,
+        {memory: {role: 'upgrader'}}
+      );
+    // builders depending on existence of construction sites
     } else {
-      // handle upgraders and builders depending on existence of construction sites
       if (constructionSites.length > 0) {
-        if (upgraders.length < 2) {
-          Game.spawns['Spawn1'].spawnCreep(
-            getBodyParts(room.energyCapacityAvailable),
-            'Upgrader' + Game.time,
-            {memory: {role: 'upgrader'}}
-          );
-        }
         if (builders.length < 4) {
           Game.spawns['Spawn1'].spawnCreep(
             getBodyParts(room.energyCapacityAvailable),
             'Builder' + Game.time,
             {memory: {role: 'builder'}}
           );
-        }
-      } else {
-        if (upgraders.length < 4) {
-          Game.spawns['Spawn1'].spawnCreep(
-            getBodyParts(room.energyCapacityAvailable),
-            'Upgrader' + Game.time,
-            {memory: {role: 'upgrader'}}
-          );
-        }
-        if (builders.length > 0) {
-          for (builder of builders) {
-            builder.suicide();
-          }
         }
       }
     }

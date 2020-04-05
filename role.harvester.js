@@ -1,3 +1,6 @@
+const moveOptions = {
+  visualizePathStyle: {stroke: '#5cf005'}
+};
 const roleHarvester = {
 
   /** @param {Creep} creep **/
@@ -5,7 +8,7 @@ const roleHarvester = {
     if(creep.store.getFreeCapacity() > 0) {
       const target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
       if(creep.harvest(target) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(target, {visualizePathStyle: {stroke: '#5cf005'}});
+          creep.moveTo(target, moveOptions);
       }
     } else {
       const targets = creep.room.find(
@@ -19,7 +22,7 @@ const roleHarvester = {
       const closestTarget = creep.pos.findClosestByPath(targets);
       if(closestTarget) {
         if(creep.transfer(closestTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(closestTarget, {visualizePathStyle: {stroke: '#5cf005'}});
+          creep.moveTo(closestTarget, moveOptions);
         }
       } else {
         const targets = creep.room.find(
@@ -32,7 +35,7 @@ const roleHarvester = {
         const closestTarget = creep.pos.findClosestByPath(targets);
         if(closestTarget) {
           if(creep.transfer(closestTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(closestTarget, {visualizePathStyle: {stroke: '#5cf005'}});
+            creep.moveTo(closestTarget, moveOptions);
           }
         } else {
           creep.moveTo(Game.spawns['Spawn1']);
