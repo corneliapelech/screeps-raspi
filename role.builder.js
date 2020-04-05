@@ -1,3 +1,5 @@
+const utilsRun = require('utils.run');
+
 const moveOptions = {
   visualizePathStyle: {stroke: '#ffaa00'}
 };
@@ -18,30 +20,13 @@ const roleBuilder = {
 		}
 
 		if(creep.memory.building) {
-			const target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-			if(target && creep.build(target) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(target, moveOptions);
-      // no construction sites to build
-			} else {
-        closestDamagedWall = creep.pos.findClosestByRange(
-          FIND_STRUCTURES,
-          {filter: (structure) =>
-            (structure.structureType == 'constructedWall' ||
-            structure.structureType == 'wall') &&
-            structure.hits < structure.hitsMax
-          }
-        );
-        if (closestDamagedWall) {
-          if (creep.repair(closestDamagedWall) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(closestDamagedWall, moveOptions);
-          }
-        }
+      // go and build, if no construction site was found ...
+      if (utilsRun.goBuild(creep, moveOptions) == false) {
+        // go repair damaged walls
+        utilsRun.repairWalls(creep, true, moveOptions);
       }
 		} else {
-			const target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-			if(creep.harvest(target) == ERR_NOT_IN_RANGE) {
-					creep.moveTo(target, moveOptions);
-			}
+			utilsRun.goHarvestEnergy(creep, moveOptions);
 		}
 	}
 

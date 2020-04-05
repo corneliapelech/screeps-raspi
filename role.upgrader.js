@@ -1,3 +1,5 @@
+const utilsRun = require('utils.run');
+
 const moveOptions = {
   visualizePathStyle: {stroke: '#30b4d1'}
 };
@@ -14,14 +16,9 @@ const roleUpgrader = {
     }
 
     if(creep.memory.upgrading) {
-      if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(creep.room.controller, moveOptions);
-      }
+      utilsRun.goUpgradeController(creep, moveOptions);
     } else {
-      const target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-      if(creep.harvest(target) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(target, moveOptions);
-      }
+      utilsRun.goHarvestEnergy(creep, moveOptions);
     }
   }
 

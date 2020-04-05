@@ -43,13 +43,17 @@ const handleCreepCount = function () {
 
 function getBodyParts(maxEnergy) {
   if (maxEnergy >= 700) {
-    return [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];  // costs: 600
+    // costs: 600
+    return [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
   } else if (maxEnergy >= 550) {
-    return [WORK, WORK, CARRY, MOVE, MOVE];    // costs: 350
+    // costs: 350
+    return [WORK, WORK, CARRY, MOVE, MOVE];
   } else if (maxEnergy >= 400) {
-    return [WORK, CARRY, MOVE, MOVE];  // costs: 250
+    // costs: 250
+    return [WORK, CARRY, MOVE, MOVE];
   } else {
-    return [WORK, CARRY, MOVE];    // costs: 200
+    // costs: 200
+    return [WORK, CARRY, MOVE];
   }
 }
 
