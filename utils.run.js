@@ -164,8 +164,28 @@ const utilsRun = {
       return true;
     }
     return false;
-  }
+  },
 
+  /**
+   * Go to the room with the attack-flag
+   * if there, (range) attack the closest enemy-structure or move closer to it
+   * @param {Creep} creep
+   * @param {Flag} flag
+   * @param {Boolean} isMelee
+   */
+  goAttackAtFlag: (creep, flag, isMelee) => {
+    if (flag && (flag.room == undefined || creep.room.name != flag.room.name)) {
+      creep.moveTo(flag);
+    } else {
+      const target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES);
+      if (isMelee && creep.attack(target) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(target);
+      }
+      if (!isMelee && creep.rangedAttack(target) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(target);
+      }
+    }
+  }
 }
 
 function repairThisWall(wall, movable, element, moveOptions) {

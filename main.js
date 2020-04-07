@@ -3,6 +3,7 @@ const roleHarvester = require('role.harvester');
 const roleUpgrader = require('role.upgrader');
 const roleBuilder = require('role.builder');
 const roleMaintainer = require('role.maintainer');
+const roleMelee = require('role.melee');
 // structures
 const structureTower = require('structure.tower');
 // utils
@@ -28,6 +29,7 @@ module.exports.loop = function () {
     }
   }
 
+  // const melees = _.filter(Game.creeps, (creep) => creep.memory.role == 'melee');
   /* run creeps */
   for (const name in Game.creeps) {
     const creep = Game.creeps[name];
@@ -44,6 +46,14 @@ module.exports.loop = function () {
       case 'maintainer':
         roleMaintainer.run(creep);
         break;
+      case 'melee': {
+        /*if (melees.length < 5) {
+          roleMelee.prep(creep);
+        } else {
+        }*/
+        roleMelee.fight(creep);
+        break;
+      }
     }
   }
 
