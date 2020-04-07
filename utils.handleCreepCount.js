@@ -12,6 +12,7 @@ const handleCreepCount = function () {
       const builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder' && creep.room.name == roomName);
       const maintainers = _.filter(Game.creeps, (creep) => creep.memory.role == 'maintainer' && creep.room.name == roomName);
       const melees = _.filter(Game.creeps, (creep) => creep.memory.role == 'melee');
+      const rangers = _.filter(Game.creeps, (creep) => creep.memory.role == 'ranger');
       // locations
       const constructionSites = _.filter(Game.constructionSites, (conSite) => conSite.room.name == roomName);
 
@@ -43,6 +44,12 @@ const handleCreepCount = function () {
             getBodyParts(room.energyCapacityAvailable, 'melee'),
             'Melee' + Game.time,
             {memory: {role: 'melee'}}
+          );
+        } else if (rangers.length < 4) {
+          spawn.spawnCreep(
+            getBodyParts(room.energyCapacityAvailable, 'ranger'),
+            'Ranger' + Game.time,
+            {memory: {role: 'ranger'}}
           );
         }
       // builders depending on existence of construction sites
