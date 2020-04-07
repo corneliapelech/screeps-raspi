@@ -27,7 +27,7 @@ const handleCreepCount = function () {
         'Upgrader' + Game.time,
         {memory: {role: 'upgrader'}}
       );
-    } else if (maintainers.length < 2) {
+    } else if (maintainers.length < 1) {
       Game.spawns['Spawn1'].spawnCreep(
         getBodyParts(room.energyCapacityAvailable),
         'Maintainer' + Game.time,

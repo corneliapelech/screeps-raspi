@@ -5,9 +5,20 @@ const utilsRun = {
    * @param {Object} moveOptions
    */
   goHarvestEnergy: (creep, moveOptions = {}) => {
-    const target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-    if(creep.harvest(target) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(target, moveOptions);
+    heritageEnergy = creep.room.find(
+      FIND_TOMBSTONES,
+      {filter: (tomb) => tomb.store.getUsedCapacity('energy') > 0}
+    );
+    if (heritageEnergy.length > 0) {
+      const closest = creep.pos.findClosestByPath(heritageEnergy);
+      if(creep.withdraw(closest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(closest, moveOptions);
+      }
+    } else {
+      const target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+      if(creep.harvest(target) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(target, moveOptions);
+      }
     }
   },
 
@@ -46,28 +57,33 @@ const utilsRun = {
    * find closest damaged wall or constructed-wall
    * if none found: return false
    * repair wall or move closer when out of range
+   * all walls should have at least 300 hit points before remaining damaged is repaired!
    * @param {Creep | Structure} element
    * @param {Object} moveOptions
    * @returns {Boolean}
    */
   repairWalls: (element, movable = false, moveOptions = {}) => {
-    const closestDamagedWall = element.pos.findClosestByRange(
+    let closestDamagedWall = element.pos.findClosestByRange(
       FIND_STRUCTURES,
       {filter: (structure) =>
         (structure.structureType == 'constructedWall' ||
         structure.structureType == 'wall') &&
-        structure.hits < structure.hitsMax
+        structure.hits < 300
       }
     );
     if (closestDamagedWall) {
-      if (movable) {
-        if (element.repair(closestDamagedWall) == ERR_NOT_IN_RANGE) {
-          element.moveTo(closestDamagedWall, moveOptions);
-        }
-      } else {
-        element.repair(closestDamagedWall);
-      }
+      repairThisWall(closestDamagedWall, movable, element, moveOptions);
       return true;
+    } else {
+      closestDamagedWall = element.pos.findClosestByRange(
+        FIND_STRUCTURES,
+        {filter: (structure) =>
+          (structure.structureType == 'constructedWall' ||
+          structure.structureType == 'wall') &&
+          structure.hits < structure.hitsMax
+        }
+      );
+      repairThisWall(closestDamagedWall, movable, element, moveOptions);
     }
     return false;
   },
@@ -150,6 +166,16 @@ const utilsRun = {
     return false;
   }
 
+}
+
+function repairThisWall(wall, movable, element, moveOptions) {
+  if (movable) {
+    if (element.repair(wall) == ERR_NOT_IN_RANGE) {
+      element.moveTo(wall, moveOptions);
+    }
+  } else {
+    element.repair(wall);
+  }
 }
 
 module.exports = utilsRun;
