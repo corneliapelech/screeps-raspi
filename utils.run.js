@@ -15,9 +15,18 @@ const utilsRun = {
         creep.moveTo(closest, moveOptions);
       }
     } else {
-      const target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-      if(creep.harvest(target) == ERR_NOT_IN_RANGE) {
+      let target = creep.pos.findClosestByPath(
+        FIND_DROPPED_RESOURCES
+      );
+      if (target) {
+        if (creep.pickup(target) == ERR_NOT_IN_RANGE) {
           creep.moveTo(target, moveOptions);
+        }
+      } else {
+        target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+        if(creep.harvest(target) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(target, moveOptions);
+        }
       }
     }
   },

@@ -42,7 +42,7 @@ const handleCreepCount = function () {
           {memory: {role: 'claimer'}}
         );
       // maintainers
-      } else if (maintainers.length < 1) {
+      } else if (maintainers.length < 0) {
         spawn.spawnCreep(
           getBodyParts(room.energyCapacityAvailable),
           'Maintainer' + Game.time,
