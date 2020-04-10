@@ -18,7 +18,27 @@ const roleUpgrader = {
     if(creep.memory.upgrading) {
       utilsRun.goUpgradeController(creep, moveOptions);
     } else {
-      utilsRun.goHarvestEnergy(creep, moveOptions);
+      if (creep.room.name === 'W5N8') {
+        // get energy from link
+        const link = Game.rooms['W5N8'].lookForAt('structure', 37, 33)[0];
+        if (link.store.getUsedCapacity('energy') > 0) {
+          const target = utilsRun.getClosestEnergySource(creep);
+          if (creep.pos.getRangeTo(link) < target.range) {
+            const getEnergy = creep.withdraw(link, RESOURCE_ENERGY);
+            if(getEnergy == ERR_NOT_IN_RANGE) {
+              creep.moveTo(link, moveOptions);
+            } else if (getEnergy == 0) {
+              creep.memory.upgrading = true;
+            }
+          } else {
+            utilsRun.moveToOrGetEnergy(target, creep, moveOptions);
+          }
+        } else {
+          utilsRun.goHarvestEnergy(creep, moveOptions);
+        }
+      } else {
+        utilsRun.goHarvestEnergy(creep, moveOptions);
+      }
     }
   }
 

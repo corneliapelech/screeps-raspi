@@ -6,6 +6,7 @@ const roleMaintainer = require('role.maintainer');
 const roleMelee = require('role.melee');
 const roleRanger = require('role.ranger');
 const roleClaimer = require('role.claimer');
+const roleLinker = require('role.linker');
 // structures
 const structureTower = require('structure.tower');
 // utils
@@ -30,6 +31,10 @@ module.exports.loop = function () {
       structureTower.run(structure);
     }
   }
+  // handle links in room 'W5N8'
+  const from = Game.rooms['W5N8'].lookForAt('structure', 13, 47)[0];
+  const to = Game.rooms['W5N8'].lookForAt('structure', 37, 33)[0];
+  from.transferEnergy(to);
 
   // const melees = _.filter(Game.creeps, (creep) => creep.memory.role == 'melee');
   /* run creeps */
@@ -62,6 +67,9 @@ module.exports.loop = function () {
       }
       case 'claimer':
         roleClaimer.run(creep);
+        break;
+      case 'linker':
+        roleLinker.run(creep);
         break;
     }
   }

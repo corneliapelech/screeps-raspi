@@ -19,6 +19,9 @@ const roleClaimer = {
           if (creep.reserveController(creep.room.controller) == ERR_NOT_IN_RANGE) {
             creep.moveTo(creep.room.controller);
           }
+        } else if (claim == 0) {
+          flags[0].remove();
+          Game.notify('claimed room' + targetRoom.name);
         }
     }
   },

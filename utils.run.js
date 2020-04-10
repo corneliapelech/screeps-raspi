@@ -1,34 +1,83 @@
 const utilsRun = {
   /**
-   * find closest energy-source and harvest or move towards it
+   * returns null or closest tombstone that holds energy
    * @param {Creep} creep
-   * @param {Object} moveOptions
+   * @returns {Tombstone | null}
    */
-  goHarvestEnergy: (creep, moveOptions = {}) => {
+  getClosestTombstoneWithEnergy(creep) {
     heritageEnergy = creep.room.find(
       FIND_TOMBSTONES,
       {filter: (tomb) => tomb.store.getUsedCapacity('energy') > 0}
     );
     if (heritageEnergy.length > 0) {
-      const closest = creep.pos.findClosestByPath(heritageEnergy);
-      if(creep.withdraw(closest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(closest, moveOptions);
+      return creep.pos.findClosestByPath(heritageEnergy);
+    }
+    return null;
+  },
+
+  /**
+   * find closest energy-source and harvest or move towards it
+   * @param {Creep} creep
+   * @param {Object} moveOptions
+   * @returns {Object} range: Number, type: string*, obj: Tombstone|Resource|Source
+   * *'tombstone', 'dropped', 'source'
+   */
+  getClosestEnergySource: (creep) => {
+    let tombstoneRange = 50;
+    let droppedRange = 50;
+    let sourceRange = 50;
+
+    const tombstone = utilsRun.getClosestTombstoneWithEnergy(creep);
+    if (tombstone) {
+      tombstoneRange = creep.pos.getRangeTo(tombstone);
+    }
+    const dropped = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+    if (dropped) {
+      droppedRange = creep.pos.getRangeTo(dropped);
+    }
+    const source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+    sourceRange = creep.pos.getRangeTo(source);
+
+    const ranges = [
+      {range: tombstoneRange, type: 'tombstone', obj: tombstone},
+      {range: droppedRange, type: 'dropped', obj: dropped},
+      {range: sourceRange, type: 'source', obj: source}
+    ];
+    ranges.sort((a, b) => a.range - b.range);
+    return ranges[0];
+  },
+
+  /**
+   * @param {Object} range: Number, type: string*, obj: Tombstone|Resource|Source
+   * @param {Creep} creep
+   * @param {Object} moveOptions
+   * *'tombstone', 'dropped', 'source'
+   */
+  moveToOrGetEnergy: (target, creep, moveOptions = {}) => {
+    if (target.type === 'tombstone') {
+      if(creep.withdraw(target.obj, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(target.obj, moveOptions);
+      }
+    } else if (target.type === 'dropped') {
+      if (creep.pickup(target.obj) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(target.obj, moveOptions);
       }
     } else {
-      let target = creep.pos.findClosestByPath(
-        FIND_DROPPED_RESOURCES
-      );
-      if (target) {
-        if (creep.pickup(target) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(target, moveOptions);
-        }
-      } else {
-        target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-        if(creep.harvest(target) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target, moveOptions);
-        }
+      // source
+      if(creep.harvest(target.obj) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(target.obj, moveOptions);
       }
     }
+  },
+
+  /**
+   * find closest energy-source and harvest or move towards it
+   * @param {Creep} creep
+   * @param {Object} moveOptions
+   */
+  goHarvestEnergy: (creep, moveOptions = {}) => {
+    const source = utilsRun.getClosestEnergySource(creep);
+    utilsRun.moveToOrGetEnergy(source, creep, moveOptions);
   },
 
   /**

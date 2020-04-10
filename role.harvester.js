@@ -12,7 +12,8 @@ const roleHarvester = {
     } else {
       if (utilsRun.goEnergizeClosestSpawnOrExtension(creep, moveOptions) == false) {
         if(utilsRun.goEnergizeClosestTower(creep, moveOptions) == false) {
-          creep.moveTo(Game.spawns['Spawn1']);
+          // wait at spawn
+          creep.moveTo(creep.room.find(FIND_MY_SPAWNS)[0]);
         }
       }
     }
