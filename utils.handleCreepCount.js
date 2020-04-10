@@ -13,11 +13,13 @@ const handleCreepCount = function () {
       const maintainers = _.filter(Game.creeps, (creep) => creep.memory.role == 'maintainer' && creep.room.name == roomName);
       const melees = _.filter(Game.creeps, (creep) => creep.memory.role == 'melee');
       const rangers = _.filter(Game.creeps, (creep) => creep.memory.role == 'ranger');
+      const claimers = _.filter(Game.creeps, creep => creep.memory.role == 'claimer');
       // locations
       const constructionSites = _.filter(Game.constructionSites, (conSite) => conSite.room.name == roomName);
 
       // ensure creeps
       const isWar = Game.flags['attack'] != undefined;
+      const isClaim = Game.flags['claim'] != undefined;
       // harvesters
       if (harvesters.length < 5) {
         spawn.spawnCreep(
@@ -32,20 +34,29 @@ const handleCreepCount = function () {
           'Upgrader' + Game.time,
           {memory: {role: 'upgrader'}}
         );
-      } else if (maintainers.length < 2) {
+      // claimers
+      } else if (isClaim && room.energyCapacityAvailable >= 1300 && (claimers.length < 1 || (claimers[0] && claimers[0].ticksToLive < 60))) {
+        spawn.spawnCreep(
+          getBodyParts(room.energyCapacityAvailable, 'claimer'),
+          'Claimer' + Game.time,
+          {memory: {role: 'claimer'}}
+        );
+      // maintainers
+      } else if (maintainers.length < 1) {
         spawn.spawnCreep(
           getBodyParts(room.energyCapacityAvailable),
           'Maintainer' + Game.time,
           {memory: {role: 'maintainer'}}
         );
+      // war force
       } else if (isWar == true) {
-        if (melees.length < 4) {
+        if (melees.length < 2) {
           spawn.spawnCreep(
             getBodyParts(room.energyCapacityAvailable, 'melee'),
             'Melee' + Game.time,
             {memory: {role: 'melee'}}
           );
-        } else if (rangers.length < 4) {
+        } else if (rangers.length < 2) {
           spawn.spawnCreep(
             getBodyParts(room.energyCapacityAvailable, 'ranger'),
             'Ranger' + Game.time,
@@ -67,6 +78,13 @@ const handleCreepCount = function () {
 }
 
 function getBodyParts(maxEnergy, role = null) {
+  if (maxEnergy >= 1300 && role == 'claimer') {
+    // costs 1300
+    return [
+      CLAIM, CLAIM,
+      MOVE, MOVE
+    ];
+  }
   if (maxEnergy >= 1100) {
     if (role == 'melee') {
       // costs 650
