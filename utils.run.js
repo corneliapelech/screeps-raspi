@@ -211,7 +211,7 @@ const utilsRun = {
       FIND_STRUCTURES,
       {filter: (structure) =>
         structure.structureType == STRUCTURE_TOWER &&
-        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+        structure.store.getFreeCapacity(RESOURCE_ENERGY) >= creep.store[RESOURCE_ENERGY]
       }
     );
     const closestTarget = creep.pos.findClosestByPath(targets);
