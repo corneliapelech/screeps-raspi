@@ -40,7 +40,7 @@ const handleCreepCount = function () {
         spawn.spawnCreep(
           getBodyParts(room.energyCapacityAvailable, 'claimer'),
           'Claimer' + Game.time,
-          {memory: {role: 'claimer'}}
+          {memory: {role: 'claimer', spawnedBy: spawn.name}}
         );
       } else if (linkers.length < 2) {
         spawn.spawnCreep(
@@ -83,6 +83,38 @@ const handleCreepCount = function () {
             {memory: {role: 'builder'}}
           );
         }
+      }
+      if (harvesters.length < 3) {
+        Game.notify('Almost run out of harvesters in room' + roomName);
+      }
+    } else {
+      const helper = Game.spawns[room.memory.parentSpawn];
+
+      const roomKeepers = _.filter(Game.creeps, (creep) =>
+        creep.memory.role == 'room-keeper' && creep.memory.target.roomName == roomName);
+      const builders = _.filter(Game.creeps, (creep) =>
+        creep.memory.role == 'builder-helper' && creep.memory.target.roomName == roomName);
+        // locations
+      const constructionSites = _.filter(Game.constructionSites, (conSite) => conSite.room.name == roomName);
+
+      if (roomKeepers.length < 2) {
+        helper.spawnCreep(
+          getHelperBody(),
+          'RoomKeeper' + Game.time,
+          {memory: {
+            role: 'room-keeper',
+            target: {x: 19, y: 2, roomName: 'W5N7'}
+          }}
+        );
+      } else if (constructionSites.length > 0 && builders.length < 2) {
+        helper.spawnCreep(
+          getHelperBody(),
+          'BuilderHelper' + Game.time,
+          {memory: {
+            role: 'builder-helper',
+            target: {x: 19, y: 2, roomName: 'W5N7'}
+          }}
+        );
       }
     }
   }
@@ -131,6 +163,14 @@ function getBodyParts(maxEnergy, role = null) {
     // costs: 200
     return [WORK, CARRY, MOVE];
   }
+}
+function getHelperBody() {
+  // costs 450
+  return [
+    MOVE, MOVE, MOVE, MOVE,
+    CARRY,
+    WORK, WORK
+  ];
 }
 
 module.exports = handleCreepCount;

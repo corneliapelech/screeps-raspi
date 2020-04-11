@@ -7,6 +7,8 @@ const roleMelee = require('role.melee');
 const roleRanger = require('role.ranger');
 const roleClaimer = require('role.claimer');
 const roleLinker = require('role.linker');
+const roleRoomKeeper = require('role.roomkeeper');
+const roleBuilderHelper = require('role.builderhelper');
 // structures
 const structureTower = require('structure.tower');
 // utils
@@ -70,6 +72,12 @@ module.exports.loop = function () {
         break;
       case 'linker':
         roleLinker.run(creep);
+        break;
+      case 'room-keeper':
+        roleRoomKeeper.run(creep);
+        break;
+      case 'builder-helper':
+        roleBuilderHelper.run(creep);
         break;
     }
   }

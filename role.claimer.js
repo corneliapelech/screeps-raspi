@@ -6,7 +6,7 @@ const roleClaimer = {
    */
   run: (creep) => {
     const flags =  _.filter(Game.flags, (flag) => flag.name == 'claim');
-    const targetRoom = flags[0].room;
+    const targetRoom = flags[0] ? flags[0].room : null;
     if (targetRoom == undefined || creep.room.name != targetRoom.name) {
       creep.moveTo(flags[0]);
     } else {
@@ -20,8 +20,10 @@ const roleClaimer = {
             creep.moveTo(creep.room.controller);
           }
         } else if (claim == 0) {
+          targetRoom.createFlag(flags[0].pos, 'spawner', COLOR_GREY);
           flags[0].remove();
           Game.notify('claimed room' + targetRoom.name);
+          targetRoom.memory.parentSpawn = creep.memory.spawnedBy;
         }
     }
   },
