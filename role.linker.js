@@ -17,7 +17,7 @@ const roleLinker = {
           creep.memory.orig.x,
           creep.memory.orig.y,
           creep.memory.orig.roomName
-        ));
+        ), moveOptions);
       }
     } else {
       if (creep.store[RESOURCE_ENERGY] == 0) {
@@ -26,7 +26,7 @@ const roleLinker = {
           creep.memory.target.x,
           creep.memory.target.y,
           creep.memory.target.roomName
-        ));
+        ), moveOptions);
       } else {
         // put energy in link or move to link
         const closestTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_LINK}});
